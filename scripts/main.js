@@ -1,17 +1,21 @@
 import pokemon_data from "./data.js";
 
 const $contenedor = document.getElementById("contenedor");
-function getMoves(pokemon){
+function renderizarAtaques(pokemon,id){
+    let $listado_ataques = document.getElementById(`listado-ataques${id}`);
+    let $fragment = document.createDocumentFragment();
     let ataques = [];
-    let render_ataques = [];
     pokemon["moves"].forEach(ataque => {
-        ataques.push(ataque["move"])
+        ataques.push(ataque["move"].name)
     });
-    ataques.forEach(move=>{
-        console.log(move.name)
-        render_ataques.push(move.name)
+    console.log(ataques)
+    ataques.forEach(ataque=>{
+        let $li = document.createElement("li");
+        $li.className = "list-group-item";
+        $li.innerHTML = ataque;
+        $fragment.appendChild($li);
     })
-    return render_ataques.slice(0,10)
+    $listado_ataques.appendChild($fragment);
 }
 function getLocation(location_areas){
 
@@ -30,16 +34,21 @@ async function newCard(id){
         <img class="card-img-top object-fit-cover" src="${pokemon.sprites["other"]["official-artwork"]["front_default"]}" alt="">
         <div class="card-body">
             <h4 class="card-title text-uppercase fs-3 fw-bold">${pokemon.name}</h4>
-            <ul class="list">
-                <li class="fw-bold">Nombre <span class = "fw-normal">${pokemon.name}</span> </li>
-                <li class="fw-bold">Peso: <span class = "fw-normal">${pokemon.weight}</span></li>
-                <li class="fw-bold">Altura: <span class="fw-normal">${pokemon.height}</span></li>
-                <li class="fw-bold lh-lg">Primeros 10 Ataques: <span class="fw-normal">${getMoves(pokemon)}</span></li>
-                <li class="fw-bold">Areas donde encontrarlo:<span class ="fw-normal"> ${getLocation(location_areas)}</span> </li>
+            <ul class="list-group">
+                <li class="fw-bold list-group-item">Nombre <span class = "fw-normal">${pokemon.name}</span> </li>
+                <li class="fw-bold list-group-item">Peso: <span class = "fw-normal">${pokemon.weight}</span></li>
+                <li class="fw-bold list-group-item">Altura: <span class="fw-normal">${pokemon.height}</span></li>
+                <li class="fw-bold lh-lg list-group-item" data-bs-toggle="collapse" data-bs-target="#listado-ataques${id}" aria-expanded="false" aria-controls="listado-ataques${id}">
+                    <h4>Ataques</h4>
+                    <ul class="list-group collapse" id="listado-ataques${id}">
+                    </ul>
+                </li>
+                <li class="fw-bold list-group-item">Areas donde encontrarlo:<span class ="fw-normal"> ${getLocation(location_areas)}</span> </li>
             </ul>
         </div>
     `
     $contenedor.appendChild(card);
+    renderizarAtaques(pokemon,id)
 }
 newCard(1)
-newCard(2)
+newCard(4)
